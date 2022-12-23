@@ -1,0 +1,23 @@
+<form method="post" id="new_{{ collection_hook }}" action="/{{ db_hook }}/{{ collection_hook }}" enctype="application/json" onsubmit="assign_hidden_inputs()">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name"><br>
+    <label for="sound">Sound:</label><br>
+    <input type="text" id="sound" name="sound"><br>
+    <label for="species">Species:</label><br>
+    <input type="text" id="species" name="species"><br>
+    <label for="diet">Diet:</label><br>
+    <select id="diet" name="diet">
+      <option value="Omnivore">Omnivore</option>
+      <option value="Herbivore">Herbivore</option>
+      <option value="Carnivore">Carnivore</option>
+      <option value="Other">Other</option>
+    </select>
+    <br><br>
+    <input type="submit" value="Submit">
+    <script>
+  
+      function assign_hidden_inputs() {
+
+      }
+    </script>
+  </form>

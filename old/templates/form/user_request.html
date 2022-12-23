@@ -1,0 +1,42 @@
+<form method="post" id="new_{{ collection_hook }}" action="/{{ db_hook }}/{{ collection_hook }}" enctype="application/json" onsubmit="">
+    
+    <p>
+        <label for="action"> I would like to ...</label><br>
+        <input type="radio" name="action" value="create"> Create<br>
+        <input type="radio" name="action" value="remove"> Remove<br>
+        <input type="radio" name="action" value="edit"> Suggest Edit<br>
+    </p>
+    <p>
+        <label for="location">Location:</label><br>
+        <select id="location" name="location">
+        <option value="RSM">RSM</option>
+        <option value="SPW">SPW</option>
+        <option value="GPW">GPW</option>
+        <option value="GV">GV</option>
+        </select>
+    </p>       
+
+    <p>
+        <label for="first_name">First Name:</label><br>
+        <input type="text" id="first_name" name="first_name"><br>
+        <label for="last_name">Last Name:</label><br>
+        <input type="text" id="last_name" name="last_name"><br>
+    </p>
+    <p>
+        <label for="department">Department:</label><br>
+        <input type="department" id="email_bool"><br>
+
+        <label for="supervisor">Supervisor:</label><br>
+        <input type="text" id="supervisor"><br>
+    <p>
+        <label for="email_radio"> Email:</label><br>
+        <input type="radio" name="email_radio" value="Email_and_AD"> Email and AD account<br>
+        <input type="radio" name="email_radio" value="AD"> Only AD account<br>
+        <input type="radio" name="email_radio" value="Email"> Only Email account<br>
+    </p>    
+ 
+    <p>
+        <input type="submit" value="Submit">
+    <p>
+    
+  </form>

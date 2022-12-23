@@ -1,0 +1,15 @@
+<form method="post" id="new_{{ collection_hook }}" action="/{{ db_hook }}/{{ collection_hook }}" enctype="application/json" onsubmit="">
+  <label for="first_name">First Name:</label><br>
+  <input type="text" id="first_name" name="first_name"><br>
+  <label for="last_name">Last Name:</label><br>
+  <input type="text" id="last_name" name="last_name"><br>
+  <label for="location">Location:</label><br>
+  <select id="location" name="location">
+    <option value="RSM">RSM</option>
+    <option value="SPW">SPW</option>
+    <option value="GPW">GPW</option>
+    <option value="GV">GV</option>
+  </select>
+  <br><br>
+  <input type="submit" value="Submit">
+</form>

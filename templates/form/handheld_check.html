@@ -1,0 +1,82 @@
+<form method="post" id="new_{{ collection_hook }}" action="/{{ db_hook }}/{{ collection_hook }}" enctype="application/json" onsubmit="assign_hidden_inputs()">
+    <p>
+        <label for="location">Location:</label><br>
+        <select id="location" name="location">
+            <option value="RSM">RSM</option>
+            <option value="SPW">SPW</option>
+            <option value="GPW">GPW</option>
+            <option value="GV">GV</option>
+        </select>
+    </p>
+    <p>
+        <label for="shift">Shift:</label><br>
+        <select id="shift" name="shift">
+            <option value="swing">Swing</option>
+            <option value="day">Day</option>
+            <option value="graveyard">Graveyard</option>
+        </select>
+    </p>
+
+    <p>
+        <label for="check">Check:</label><br>
+        <select id="check" name="check">
+            <option value="in">IN</option>
+            <option value="out">Out</option>
+        </select>
+    </p>
+    <p>
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+    </p>
+    <label for="handheld">Handheld:</label><br>
+    <select id="handheld" name="handheld">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+    <input type="hidden" id="date" name="date" value="">
+    <input type="hidden" id="submit_time" name="submit_time" value="">
+    <br><br>
+    <input type="submit" value="Submit">
+    <script>
+        
+        function assign_hidden_inputs(){
+            submit_timeElement = document.getElementById( 'submit_time' );
+            submit_timeElement.value = Get_Time(  );
+            dateEvent = document.getElementById( 'date' );
+            dateEvent.value = Get_Day(  );
+        }
+
+        function Get_Day(  ){
+            currentDate = new Date(  );
+            month = currentDate.getMonth(  ) + 1; // Add 1 because getMonth() returns a 0-based index
+            day = currentDate.getDate(  );
+            year = currentDate.getFullYear(  );
+            dateString = `${ month }/${ day }/${ year }`;
+            return dateString
+        }
+
+        function Get_Time(  ){
+            currentTime = new Date(  );
+            let hours = currentTime.getHours(  );
+            minutes = currentTime.getMinutes(  );
+            seconds = currentTime.getSeconds(  );
+
+            let ampm = "AM";
+            if (hours >= 12) {
+                hours -= 12;
+                ampm = "PM";
+            }
+            if (hours === 0) {
+                hours = 12;
+            }
+            if (minutes < 10) {
+                minutes = `0${ minutes }`;
+            }
+
+            timeString = `${ hours }:${ minutes }:${ seconds } ${ampm}`;
+            return timeString   
+        }
+      </script>
+  </form>

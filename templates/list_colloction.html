@@ -1,0 +1,42 @@
+<html>
+  
+  
+  <body>
+    <label>Collection Name: {{ collection_name }}</label>
+    <br>
+    
+    <table>
+      <thead>
+        <tr>
+        {% for item in keys %}
+          <th>{{ item }}</th>
+        {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in json_collection %}
+          <tr>  
+            {% for value in keys %}
+              
+              {% if value == "link" %}
+                <td><a href='{{ row[ value ] }}''>Link</a></td>
+                <td><form method="POST" id="delete_item" action="/delete{{ row[ value ] }}" enctype="application/json" onsubmit="Confirm_Submit(  )"><input type="submit" value="Delete"></form></td>
+                
+              {% else %}
+                 <td>{{ row[ value ] }}</td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </body>
+  <script>
+      function Confirm_Submit(  ){
+        if (!confirm('Are you sure you want to take this action?\nYou cannot undo this...')) {
+          event.preventDefault();
+        }
+      }
+  </script>
+</html>

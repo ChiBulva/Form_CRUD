@@ -1,0 +1,37 @@
+<form method="post" id="new_{{ collection_hook }}" action="/{{ db_hook }}/{{ collection_hook }}" enctype="application/json" onsubmit="">
+  <p>
+    <label for="lumber-type">Lumber Type:</label><br>
+    <select id="lumber-type" name="lumberType">
+      <option value="pine">Pine</option>
+      <option value="oak">Oak</option>
+      <option value="maple">Maple</option>
+      <option value="cherry">Cherry</option>
+    </select><br>
+  </p>
+  <p>
+    <label for="lumber-length">Lumber Length:</label><br>
+    <select id="lumber-length" name="lumberLength">
+      <option value="8">8 feet</option>
+      <option value="10">10 feet</option>
+      <option value="12">12 feet</option>
+      <option value="14">14 feet</option>
+      <option value="16">16 feet</option>
+    </select>
+  </p>
+  <p>
+    <label for="lumber-height">Lumber Height:</label><br>
+    <select id="lumber-height" name="lumber-height">
+      <option value="2">2 inches</option>
+      <option value="4">4 inches</option>
+    </select><br>
+    <label for="lumber-width">Lumber Width:</label><br>
+    <select id="lumber-width" name="lumber-width">
+      <option value="2">2 inches</option>
+      <option value="4">4 inches</option>
+      <option value="6">6 inches</option>
+    </select>
+  </p>
+  <p>
+      <input type="submit" value="Submit">
+  </p>
+</form>

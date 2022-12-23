@@ -1,0 +1,22 @@
+<html>
+  <body>
+
+    Looks like the form: {{ wrong_form_name }}
+    <br>
+    <br>
+    Forms that do exist:
+    <ul>
+      {% for form in forms %}
+        <a href="{{ form }}">/{{ form }}</a>
+        <br>
+      {% endfor %}
+    </ul>
+    You can also see their current data sets here:
+    <ul>
+      {% for form in forms %}
+        <a href="../{{ db_hook }}/{{ form.replace( '.html', '' ) }}">/{{ form.replace( '.html', '' ) }}</a>
+        <br>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

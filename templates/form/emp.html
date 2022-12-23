@@ -1,0 +1,30 @@
+<form method="post" id="new_{{ collection_hook }}" action="/{{ db_hook }}/{{ collection_hook }}" enctype="application/json" onsubmit="assign_hidden_inputs()">
+  <label for="first_name">First Name:</label><br>
+  <input type="text" id="first_name" name="first_name"><br>
+  <label for="last_name">Last Name:</label><br>
+  <input type="text" id="last_name" name="last_name"><br>
+  <label for="department">Department:</label><br>
+  <input type="text" id="department" name="department"><br>
+  <label for="location">Location:</label><br>
+  <select id="location" name="location">
+    <option value="RSM">RSM</option>
+    <option value="SPW">SPW</option>
+    <option value="GPW">GPW</option>
+    <option value="GV">GV</option>
+  </select>
+  <input type="hidden" id="name" name="name" value="">
+  <input type="hidden" id="name_proper" name="name_proper" value="">
+  <br><br>
+  <input type="submit" value="Submit">
+  <script>
+
+    function assign_hidden_inputs() {
+        first_name = document.getElementById( 'first_name' ).value;
+		last_name = document.getElementById( 'last_name' ).value;
+		name = document.getElementById( 'name' );
+		name_proper = document.getElementById( 'name_proper' );
+		name.value = first_name + " " + last_name
+		name_proper.value = last_name + ", " + first_name
+    }
+  </script>
+</form>
