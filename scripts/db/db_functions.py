@@ -11,16 +11,16 @@ def get_all_forms(  ):
     return list_form_files( form_path )
 
 def add_data_to_db( collection, data, DB_HOOK, collection_name ):
-    try:
-        id =  collection.insert_one( data ).inserted_id
-        data[ "link" ] = "/" + str( DB_HOOK ) + "/" + str( collection_name ) + "/" + str( id )
-        collection.update_one({"_id": ObjectId( id )}, {"$set": data})
-        return id
+    #try:
+    id =  collection.insert_one( data ).inserted_id
+    data[ "link" ] = "/" + str( DB_HOOK ) + "/" + str( collection_name ) + "/" + str( id )
+    collection.update_one({"_id": ObjectId( id )}, {"$set": data})
+    return id
       
-    except:
-        err = "Error: the item was not addded to the DB"
-        print( err )
-        return err
+    #except:
+    err = "Error: the item was not addded to the DB"
+    print( err )
+    return err
 
 def fetch_data( collection, filter, projection ):
     try:
@@ -102,3 +102,13 @@ def strip_whitespace(obj):
         # Strip whitespace from the string
         obj = obj.strip()
     return obj
+
+def create_new_collection( db, name ): # Create the collection
+    db.create_collection(name)
+    """
+    try:
+      
+       print( "Successfully creted collection:\t" + str( name ) )
+    except:
+        print( "Failed to create collection:\t" + str( name ) )
+    """

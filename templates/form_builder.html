@@ -1,0 +1,97 @@
+<form target="_blank" method="POST" id="{{ db_hook }}_form_builder" action="/{{ db_hook }}/new_form/" enctype="application/json" onsubmit="assign_hidden_inputs()">>
+    <label for="Form_Name">Form Name:</label><br>
+    <input type="text" id="Form_Name" name="Form_Name"><br><br>
+    <label for="input1">Input 1:</label><br>
+    <input type="text" id="input1" name="input1"><br><br>
+    <div id="inputFields">
+    </div>
+    <button type="button" id="addInputButton">Add Input</button>
+    <br><br>
+    <div id="radioFields">
+    </div>
+    <button type="button" id="addRadioButton">Add Radio Button</button>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+  
+  <script>
+    // Set the maximum number of input fields allowed
+    const MAX_INPUTS = 15;
+  
+    // Get a reference to the add input button and input fields container
+    const addInputButton = document.getElementById('addInputButton');
+    const addRadioButton = document.getElementById('addRadioButton');
+    const inputFields = document.getElementById('inputFields');
+    const radioFields = document.getElementById('radioFields');
+    
+    // Set up a counter to keep track of the number of input fields added
+    let inputCounter = 2;
+    let radioCounter = 1;
+  
+    // Add an event listener to the add input button
+    addInputButton.addEventListener('click', function() {
+      // Check if the maximum number of input fields has been reached
+      if (inputCounter > MAX_INPUTS) {
+        alert('You have reached the maximum number of inputs allowed.');
+        return;
+      }
+  
+      // Create a new input field and label
+      const inputField = document.createElement('input');
+      inputField.type = 'text';
+      inputField.id = `input${inputCounter}`;
+      inputField.name = `input${inputCounter}`;
+      const label = document.createElement('label');
+      label.htmlFor = `input${inputCounter}`;
+      label.innerHTML = `Input ${inputCounter}:`;
+  
+      // Add the input field and label to the input fields container
+      inputFields.appendChild(label);
+      inputFields.appendChild(inputField);
+      inputFields.appendChild(document.createElement('br'));
+      inputFields.appendChild(document.createElement('br'));
+  
+      // Increment the input counter
+      inputCounter++;
+    });
+
+    addRadioButton.addEventListener('click', function() {
+      // Check if the maximum number of input fields has been reached
+      if (inputCounter > MAX_INPUTS) {
+        alert('You have reached the maximum number of inputs allowed.');
+        return;
+      }
+
+      // Create a new input field and label
+      const radioButton = document.createElement('input');
+      radioButton.type = 'radio';
+      radioButton.name = `radioGroup${radioCounter}`;
+      radioButton.value = `Option ${i}`;
+      const radioLabel = document.createElement('label');
+      radioLabel.innerHTML = `Option ${i}`;
+  
+      // Add the radio button and label to the radio button group
+      radioGroup.appendChild(radioButton);
+      radioGroup.appendChild(radioLabel);
+      radioGroup.appendChild(document.createElement('br'));
+
+      inputFields.appendChild(radioGroup);
+      inputFields.appendChild(document.createElement('br'));
+      inputFields.appendChild(document.createElement('br'));
+
+      `
+      // Add the input field and label to the input fields container
+      inputFields.appendChild(label);
+      inputFields.appendChild(inputField);
+      inputFields.appendChild(document.createElement('br'));
+      inputFields.appendChild(document.createElement('br'));
+      `
+      // Increment the input counter
+      radioCounter++;
+
+    });
+
+    function assign_hidden_inputs(){
+        alert("Assign hidden Things")
+    }
+  </script>

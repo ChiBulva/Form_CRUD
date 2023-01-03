@@ -5,17 +5,18 @@ import json
 import bson.json_util
 
 import scripts.db.db_functions as db_functions
+import scripts.form_builder.form_builder_functions as form_builder_functions
 
 # Connect to the MongoDB database
 DB_HOOK = "swanson_mongodb"
 
 client = pymongo.MongoClient( "mongodb://localhost:27017/" )
-Swanson_MongoDB = client[ DB_HOOK ]
+MAIN_DB = client[ DB_HOOK ]
 
 try:
 
     mongo = pymongo.MongoClient( "mongodb://localhost:27017", serverSelectionTimeoutMS = 1000 )
-    Swanson_MongoDB = mongo[ "Swanson_MongoDB" ]
+    MAIN_DB = mongo[ "Swanson_MongoDB" ]
     mongo.server_info(   ) # If not connected exception will trigger
 
     print( "successfully connected to MongoDB Server!!!" )
@@ -26,7 +27,7 @@ app = Flask( __name__ )
 
 def try_collection( collection ):
     try:
-        collection = Swanson_MongoDB[ collection ]
+        collection = MAIN_DB[ collection ]
     except:
         print( "Cannot Connect to MongoDB collection:\t " + str( collection ) )
     return collection
@@ -47,21 +48,82 @@ def defrag_cursor( Results ):
     Results = bson.json_util.dumps(Results)
     return Results
 
+def collecction_name_exists( name ):
+    # Get a list of the collections in the database
+    collection_names = MAIN_DB.list_collection_names()
+    if name in collection_names:
+        print( "Name:\t"+ str( name ) + "\tis in:\t" + str(  collection_names) )
+        return True
+    print( "Name:\t"+ str( name ) + "\tis not in:\t" + str(  collection_names) )
+    return False
+
 def print_cursor( Cursor ):
     for Result in Cursor:
         print( Result )
 
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  FORM Things
 
+# !!!
+
+
+
+# !!!
+
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  CRUD operations
+@app.route("/" + str( DB_HOOK.lower(  ) ) + "/new_form", methods=["POST"])
+@app.route("/" + str( DB_HOOK.lower(  ) ) + "/new_form/", methods=["POST"])
+def new_form(  ):
+    # Add a new item to the "items" collection
+    form_fields = db_functions.strip_whitespace( request.form.to_dict(  ) )
+    
+    fn = form_fields['Form_Name'].lower()
+
+    # Check to see if the collection exists
+    if(  collecction_name_exists( fn ) ):
+        print( collecction_name_exists( fn ) )
+        return jsonify( { "error": str( fn ) + " Exists already. Exit this page and try again" } )
+    
+    db_functions.create_new_collection( MAIN_DB, fn )
+
+    print( form_fields )
+    """
+    # Example usage
+    form_elements = [
+        'text:Full Name:name',
+        'text:Email:email',
+        'radio:Gender:gender:Male:Female'
+    ]
+    
+    form_html = form_builder_functions.build_form(form_elements)
+    """
+    form_html = form_builder_functions.create_form( form_fields, DB_HOOK )
+    print( form_builder_functions.Save_Form_HTML( form_html, fn ) )
+
+    return redirect( "/" + str( DB_HOOK.lower(  ) ) + "/form/" + str( fn ) )
+    
+    return jsonify(str(form_html).replace("\n", "").replace("\"", ""))
+
+
+    return render_template( "form_builder.html", db_hook=DB_HOOK )
+
+@app.route("/" + str( DB_HOOK.lower(  ) ) + "/form_builder", methods=["GET"])
+@app.route("/" + str( DB_HOOK.lower(  ) ) + "/form_builder/", methods=["GET"])
+def form_builder(  ):
+    return render_template( "form_builder.html", db_hook=DB_HOOK)
+
+
 # This should have you adding a 
-@app.route("/form", methods=["GET"])
-@app.route("/form/", methods=["GET"])
+@app.route("/" + str( DB_HOOK.lower(  ) ) + "/form", methods=["GET"])
+@app.route("/" + str( DB_HOOK.lower(  ) ) + "/form/", methods=["GET"])
 def form_render_bare(  ):
     return redirect( "/form/all" )
 
-@app.route("/form/<form_name>", methods=["GET"])
+@app.route("/" + str( DB_HOOK.lower(  ) ) + "/form/<form_name>", methods=["GET"])
 def form_render( form_name ):
     try:
+        if( ".html" not in form_name ):
+            form_name = str( form_name ) + ".html"
+
         if( form_name == "all_users.html" ):
             form_name = ""
             100 / 0 # Error on purpose
@@ -94,7 +156,17 @@ def get_data_all_all( collection, field ):
 @app.route("/" + str( DB_HOOK.lower(  ) ) + "/<collection>/data/<field>/<value>", methods=["GET"])
 @app.route("/" + str( DB_HOOK.lower(  ) ) + "/<collection>/data/<field>/<value>/", methods=["GET"])
 def get_data_all( collection, field, value ) :
-    return redirect( "/" + str( DB_HOOK.lower(  ) ) + "/" + str( collection ) + "/data/" + str( field ) + "/" + str( value ) + "/default" )    
+    if( value == "list" ):
+        _, collection, collection_name = assign_keys( collection )
+        #get all possible things in the field
+        json_collection = db_functions.get_possible_values( collection, field )
+        Results = [  ]
+        for thing in json_collection:
+            Results.append( thing[ field ] )
+        
+        return jsonify( Results )
+        
+    return redirect( "/" + str( DB_HOOK.lower(  ) ) + "/" + str( collection ) + "/data/" + str( field ) + "/" + str( value ) + "/default" )
 
 @app.route("/" + str( DB_HOOK.lower(  ) ) + "/<collection>/data/<field>/<value>/<data_type>", methods=["GET"])
 def get_data( collection, field, value, data_type ) :
@@ -150,7 +222,7 @@ def assign_keys( collection ):
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  CRUD operations
 @app.route("/" + str( DB_HOOK.lower(  ) ) + "/<collection>", methods=["GET"])
 def get_items( collection ):
-    
+        
     keys, collection, collection_name = assign_keys( collection )
   
     # Grabs all objects in collection and makes them a cursor object
@@ -211,7 +283,7 @@ def get_employees(  ):
     try:
         # Adding data here
         print( "Adding data here:\t" + str( user ))
-        dbResponse = Swanson_MongoDB.emp.insert_one( user )
+        dbResponse = MAIN_DB.emp.insert_one( user )
         print( "Added:\t" + str( dbResponse.acknowledged ) )
 
         return ( { "id": str( dbResponse.inserted_id ) } )
