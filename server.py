@@ -8,28 +8,32 @@ import scripts.db.db_functions as db_functions
 import scripts.form_builder.form_builder_functions as form_builder_functions
 
 # Connect to the MongoDB database
-DB_HOOK = "swanson_mongodb"
+DB_HOOK = "SGIWebTools"
 
-client = pymongo.MongoClient( "mongodb://localhost:27017/" )
-MAIN_DB = client[ DB_HOOK ]
+#client = pymongo.MongoClient( "mongodb://localhost:27017/" )
+#MAIN_DB = client[ DB_HOOK ]
 
 try:
 
-    mongo = pymongo.MongoClient( "mongodb://localhost:27017", serverSelectionTimeoutMS = 1000 )
-    MAIN_DB = mongo[ "Swanson_MongoDB" ]
+    mongo = pymongo.MongoClient( "mongodb://SGIWebTools:27017", serverSelectionTimeoutMS = 1000 )
+    MAIN_DB = mongo[ DB_HOOK ]
     mongo.server_info(   ) # If not connected exception will trigger
 
     print( "successfully connected to MongoDB Server!!!" )
 except:
-    print( "Cannot Connect to MongoDB!!!" )
+    print( "Cannot Connect to " + str( DB_HOOK ) + "!!!" )
 
 app = Flask( __name__ )
 
 def try_collection( collection ):
     try:
+
         collection = MAIN_DB[ collection ]
+
     except:
-        print( "Cannot Connect to MongoDB collection:\t " + str( collection ) )
+
+        print( "Cannot Connect to HandHeldCheck collection:\t " + str( collection ) )
+
     return collection
 
 def Get_Keys( collection ):
@@ -207,6 +211,8 @@ def assign_keys( collection ):
         return ANIMAL_KEYS, collection, collection_name
     elif(  collection_name == "handheld_check"):
         return HANDHELD_CHECK_KEYS, collection, collection_name
+    elif(  collection_name == "all"):
+        return render_template( "form/all_forms.html", forms=forms, wrong_form_name=form_name )
     else:
         return Get_Keys( collection ), collection, collection_name
     
@@ -225,6 +231,7 @@ def get_items( collection ):
         
     keys, collection, collection_name = assign_keys( collection )
   
+    print( "Trigger!!!" )
     # Grabs all objects in collection and makes them a cursor object
     json_collection = collection.find()
 
@@ -241,6 +248,8 @@ def get_items( collection ):
 def add_item( collection ):
     print( collection )
 
+    print( "Trigger!!!" )
+
     collection_name = collection
     collection = try_collection( collection )
     # Add a new item to the "items" collection
@@ -253,7 +262,7 @@ def add_item( collection ):
     return redirect( "/" + str( DB_HOOK.lower(  ) ) + "/" + str( collection_name ) )
     return redirect( "/" + str( DB_HOOK.lower(  ) ) + "/" + str( collection_name ) + "/" + str( item_id ) )
     
-    #return render_template( "form/all_forms.html", forms=forms, wrong_form_name=form_name )
+    
 
 @app.route("/" + str( DB_HOOK.lower(  ) ) + "/<collection>/<item_id>", methods=["GET"])
 def get_item(collection, item_id):
@@ -295,6 +304,22 @@ def get_employees(  ):
 @app.route( "/create_user", methods=[ "POST" ] )
 def create_user(  ):
     return "create users"
+
+@app.route( "/", methods=[ "GET" ] )
+def homepage(  ):
+    return "hi"
+
+@app.route('/help', methods=['GET'])
+def help():
+    """Print available functions."""
+    
+    func_list = {}
+    
+    for rule in app.url_map.iter_rules():
+        if rule.endpoint != 'static':
+            func_list[rule.rule] = app.view_functions[rule.endpoint].__doc__
+    
+    return jsonify({ "routes": func_list })
 
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  CRUD operations
 
